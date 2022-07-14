@@ -51,6 +51,20 @@
 
 ;; impatient mode
 (package! impatient-mode)
+
+
+;; org and org-roam for note taking
 (package! org-roam)
 (package! org-roam-ui)
+
+
+;; window manager
 (package! switch-window)
+
+
+;; cursor highlight
+(package! beacon)
+
+
+;; browse web page in emacs
+(package! exwm)
