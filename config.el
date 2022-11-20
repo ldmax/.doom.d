@@ -113,3 +113,73 @@
 (global-set-key (kbd "C-x 4 C-o") 'switch-window-then-display-buffer)
 
 (global-set-key (kbd "C-x 4 0") 'switch-window-then-kill-buffer)
+
+
+;; beacon-mode on start up
+(use-package! beacon
+  :config
+  (beacon-mode 1))
+
+;; lsp configurations
+(defun efs/lsp-mode-setup ()
+  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+  (lsp-headerline-breadcrumb-mode))
+
+(use-package! lsp-mode
+  :commands (lsp lsp-deferred)
+  :hook (lsp-mode . efs/lsp-mode-setup)
+  :init
+  (setq lsp-keymap-prefix "C-c l")  ;; or 'C-l', 's-l'
+  :config
+  (lsp-enable-which-key-integration t))
+
+;; lsp-ui setup
+(use-package! lsp-ui
+  :hook (lsp-mode . lsp-ui-mode)
+  :custom
+  (lsp-ui-doc-position 'bottom))
+
+;; lsp-treemacs setup
+(use-package! lsp-treemacs
+  :after lsp)
+
+;; lsp-ivy setup
+(use-package! lsp-ivy)
+
+;; debugging with dap-mode
+(use-package! dap-mode
+  ;; uncomment the config below if you want all UI panes
+  ;; to be hidden by default
+  ;; :custom
+  ;; (lsp-enable-dap-auto-configure nil)
+  :after lsp-mode
+  :commands dap-debug
+  :hook ((python-mode . dap-ui-mode) (python-mode .dap-mode))
+  :config
+  ;; set up node debugging
+  (require 'dap-python)
+  (setq dap-python-debugger 'debugpy)
+
+  ;; bind `C-c l d` to `dap-hydra` for easy access
+  (general-define-key
+   :keymaps 'lsp-mode-map
+   :prefix lsp-keymap-prefix
+   "d" '(dap-hydra t :wk "debugger")))
+
+;; python ide
+(use-package! python-mode
+  :ensure t
+  :hook (python-mode . lsp-deferred)
+  :custom
+  ;; NOTE: set these if python 3 is called "python3" on your system
+  (dap-python-executable "python3")
+  (python-shell-interpreter "python3")
+  (setq dap-auto-configure-mode t)
+  :config
+  (require 'dap-python))
+
+
+;; virtualenv
+(use-package! pyvenv
+  :config
+  (pyvenv-mode 1))

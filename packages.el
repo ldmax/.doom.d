@@ -68,3 +68,9 @@
 
 ;; browse web page in emacs
 (package! exwm)
+
+;; lsp related packages
+(package! lsp-ivy)
+
+;; for debugging
+(package! dap-mode)
